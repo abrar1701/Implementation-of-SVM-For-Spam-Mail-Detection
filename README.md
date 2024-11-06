@@ -8,59 +8,54 @@ To write a program to implement the SVM For Spam Mail Detection.
 2. Anaconda – Python 3.7 Installation / Jupyter notebook
 
 ## Algorithm
-1. 
-2. 
-3. 
-4. 
+1. Load data, clean by selecting columns, and preprocess text.
+2. Encode labels, vectorize text using TF-IDF.
+3. Split data, train SVM classifier.
+4. Predict, evaluate accuracy, and generate report 
 
 ## Program:
-```
+```py
 /*
 Program to implement the SVM For Spam Mail Detection..
-Developed by: 
-RegisterNumber:  
+Developed by: MOHAMED ABRAR M
+RegisterNumber:  212223040111
 */
-from google.colab import files
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report
+from google.colab import files
 
 uploaded = files.upload()  
-df = pd.read_csv("spam.csv", encoding='latin-1')  
+df = pd.read_csv("spam.csv", encoding='latin-1')
 
-print(df.head())
+df = df[['v1', 'v2']]  # Select relevant columns (assuming v1 is label, v2 is text)
+df.columns = ['label', 'message']  # Rename columns for readability
 
-df = df[['v1', 'v2']]  
-df.columns = ['label', 'text']  
+df['label'] = df['label'].map({'ham': 0, 'spam': 1})  # Map ham to 0 and spam to 1
 
-df['label'] = df['label'].map({'spam': 1, 'ham': 0})
+vectorizer = TfidfVectorizer(stop_words='english')
+X = vectorizer.fit_transform(df['message'])
+y = df['label']
 
-X_train, X_test, y_train, y_test = train_test_split(df['text'], df['label'], test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-vectorizer = TfidfVectorizer(max_features=3000) 
-X_train_tfidf = vectorizer.fit_transform(X_train)
-X_test_tfidf = vectorizer.transform(X_test)
+svm = SVC(kernel='linear', C=1.0, random_state=42)
+svm.fit(X_train, y_train)
 
-svm = SVC(kernel='linear')
-svm.fit(X_train_tfidf, y_train)
-
-y_pred = svm.predict(X_test_tfidf)
-
+y_pred = svm.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
-print(f'Accuracy: {accuracy:.4f}')
-print("Classification Report:")
-print(classification_report(y_test, y_pred))
+report = classification_report(y_test, y_pred)
 
-import joblib
-joblib.dump(svm, 'svm_spam_model.pkl')
-joblib.dump(vectorizer, 'tfidf_vectorizer.pkl')
+print(f"Accuracy: {accuracy}")
+print("Classification Report:\n", report
 
 ```
 
 ## Output:
-![SVM For Spam Mail Detection](sam.png)
+![image](https://github.com/user-attachments/assets/f2c4d821-9628-4d6f-be13-5680946399e7)
+
 
 
 ## Result:
